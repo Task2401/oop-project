@@ -21,10 +21,12 @@ struct SimSettings {
 
     int simulationTicks;
     int minConfidenceThreshold ;
+
+    bool helpRequested;
+    std::vector<Position> gpsTargets;
 };
 
-std::vector<Position> gpsTargets;
-bool helpRequested;
+
 
 SimSettings parseArguments(int argc, char**argv);
 void printHelp();
