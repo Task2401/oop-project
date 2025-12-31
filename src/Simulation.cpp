@@ -49,47 +49,47 @@ SimSettings parseArguments(int argc, char**argv) {
         if (arg == "--help") {
             settings.helpRequested = true;
             printHelp();
-            return;
+            return settings;
         }
 
         else if (arg == "--seed") {
-            if ((i + 1) < argc) settings.seed = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.seed = atoi(argv[++i]);
         }
 
         else if (arg == "--dimX") {
-            if ((i + 1) < argc) settings.dimX = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.dimX = atoi(argv[++i]);
         }
 
         else if (arg == "--dimY") {
-            if ((i + 1) < argc) settings.dimY = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.dimY = atoi(argv[++i]);
         }
 
         else if (arg == "--numMovingCars") {
-            if ((i + 1) < argc) settings.numMovingCars = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.numMovingCars = atoi(argv[++i]);
         }
 
         else if (arg == "--numMovingBikes") {
-            if ((i + 1) < argc) settings.numMovingBikes = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.numMovingBikes = atoi(argv[++i]);
         }
 
         else if (arg == "--numParkedCars") {
-            if ((i + 1) < argc) settings.numParkedCars = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.numParkedCars = atoi(argv[++i]);
         }
 
         else if (arg == "--numStopSigns") {
-            if ((i + 1) < argc) settings.numStopSigns = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.numStopSigns = atoi(argv[++i]);
         }
 
         else if (arg == "--numTrafficLights") {
-            if ((i + 1) < argc) settings.numTrafficLights = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.numTrafficLights = atoi(argv[++i]);
         }
 
         else if (arg == "--simulationTicks") {
-            if ((i + 1) < argc) settings.simulationTicks = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.simulationTicks = atoi(argv[++i]);
         }
 
         else if (arg == "--minConfidenceThreshold") {
-            if ((i + 1) < argc) settings.minConfidenceThreshold = atoi(argv[i++]);
+            if ((i + 1) < argc) settings.minConfidenceThreshold = atoi(argv[++i]);
         }
 
         else if (arg == "--gps") {
@@ -100,8 +100,8 @@ SimSettings parseArguments(int argc, char**argv) {
                 }
 
                 Position pos;
-                pos.x = atoi(argv[i++]);
-                pos.y = atoi(argv[i++]);
+                pos.x = atoi(argv[++i]);
+                pos.y = atoi(argv[++i]);
                 settings.gpsTargets.push_back(pos);
             }
         }
