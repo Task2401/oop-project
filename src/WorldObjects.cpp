@@ -11,7 +11,6 @@ WorldObjects::WorldObjects(const string& objectID, int x, int y, char g):id(obje
 }
 
 WorldObjects :: ~WorldObjects() {
-
 }
 
 const string& WorldObjects::gedId() const {
@@ -22,5 +21,43 @@ Position WorldObjects::getPosition() const {
     return pos;
 }
 
+StaticObject::StaticObject(const string& objectID, int x, int y, char g) : WorldObjects(objectID, x , y, g) {
+    cout << "StaticOject Created (" << objectID << ")" << endl;
+}
 
+void StaticObject::update() {
 
+}
+
+MovingObject::MovingObject(const string& objectID, int x, int y, char g, int s, Direction d):WorldObjects(objectID, x, y , g), speed(s), direction(d) {
+    cout << "Moving object created (" << objectID << ")" << endl;    
+}
+
+void MovingObject::update() {
+    move();
+}
+
+void MovingObject::move() {
+    switch(direction) {
+        case NORTH:
+            pos.y += speed;
+            break;
+        case SOUTH:
+            pos.y -=speed;
+            break;
+        case EAST:
+            pos.x += speed;
+            break;
+        case WEST:
+            pos.x -= speed;
+            break;
+    }
+}
+
+int MovingObject::getSpeed() const {
+    return speed;
+}
+
+Direction MovingObject::getDirection() const {
+    return direction;
+}

@@ -45,7 +45,7 @@ class MovingObject : public WorldObjects {
         Direction direction;
 
     public:
-        MovingObject(const std::string& objectID, int x, int y, char s, Direction d);
+        MovingObject(const std::string& objectID, int x, int y, char g, int s, Direction d);
 
         virtual void update() override;
 
