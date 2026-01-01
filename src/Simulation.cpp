@@ -105,6 +105,10 @@ SimSettings parseArguments(int argc, char**argv) {
                 settings.gpsTargets.push_back(pos);
             }
         }
+
+        else {
+            cout << "Invalid arguments. Use '--help' to see the valid arguments." << endl;
+        }
     }
     return settings;
 }
