@@ -117,7 +117,7 @@ StationaryVehicles::StationaryVehicles(const string& objectID, int x, int y):Sta
     cout << "Parked car added (" << objectID << ")" << endl;
 }
 
-Car::Car(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'C', 2, d) {
+Car::Car(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'C', 1, d) {
     cout << "Moving car added (" << objectID << ")" << endl;
 }
 
