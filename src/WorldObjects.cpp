@@ -21,12 +21,12 @@ Position WorldObjects::getPosition() const {
     return pos;
 }
 
-StaticObject::StaticObject(const string& objectID, int x, int y, char g) : WorldObjects(objectID, x , y, g) {
-    cout << "StaticOject Created (" << objectID << ")" << endl;
+char WorldObjects::getGlyph() const {
+    return glyph;
 }
 
-void StaticObject::update() {
-
+StaticObject::StaticObject(const string& objectID, int x, int y, char g) : WorldObjects(objectID, x , y, g) {
+    cout << "StaticOject Created (" << objectID << ")" << endl;
 }
 
 MovingObject::MovingObject(const string& objectID, int x, int y, char g, int s, Direction d):WorldObjects(objectID, x, y , g), speed(s), direction(d) {
