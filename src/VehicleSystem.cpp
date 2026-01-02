@@ -25,7 +25,7 @@ void SelfDrivingCar::decelerate() {
         speed = 1;
     }
 
-    else if (speedState = HALF_SPEED) {
+    else if (speedState == HALF_SPEED) {
         speedState = STOPPED;
         speed = 0;
     }
