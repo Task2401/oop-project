@@ -5,13 +5,10 @@
 #include <vector>
 #include <string>
 
+#include "Common.h"
+
 enum Direction {NORTH, SOUTH, EAST, WEST};
 enum LightState {RED, GREEN, YELLOW};
-
-struct Position{
-    int x;
-    int y;
-};
 
 class WorldObjects {
     protected:
@@ -26,7 +23,7 @@ class WorldObjects {
 
         virtual void update() = 0;
 
-        const std::string& gedId() const;
+        const std::string& getId() const;
         Position getPosition() const;
         char getGlyph() const;
 };

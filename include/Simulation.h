@@ -3,10 +3,7 @@
 
 #include <vector>
 
-struct Position {
-    int x;
-    int y;
-};
+#include "Common.h"
 
 struct SimSettings {
     int seed;

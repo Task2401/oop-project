@@ -13,7 +13,7 @@ WorldObjects::WorldObjects(const string& objectID, int x, int y, char g):id(obje
 WorldObjects :: ~WorldObjects() {
 }
 
-const string& WorldObjects::gedId() const {
+const string& WorldObjects::getId() const {
     return id;
 }
 
@@ -27,6 +27,10 @@ char WorldObjects::getGlyph() const {
 
 StaticObject::StaticObject(const string& objectID, int x, int y, char g) : WorldObjects(objectID, x , y, g) {
     cout << "StaticOject Created (" << objectID << ")" << endl;
+}
+
+void StaticObject::update() {
+
 }
 
 MovingObject::MovingObject(const string& objectID, int x, int y, char g, int s, Direction d):WorldObjects(objectID, x, y , g), speed(s), direction(d) {
