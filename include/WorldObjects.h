@@ -53,4 +53,45 @@ class MovingObject : public WorldObjects {
 
 };
 
+class TrafficLight : public StaticObject {
+    private:
+        LightState state;
+        int timer;
+
+    public:
+        TrafficLight(const std::string& objectID, int x, int y);
+
+        virtual void update() override;
+
+        LightState getState() const;
+};
+
+class TrafficSign : public StaticObject {
+    private:
+        std::string text;
+    
+    public:
+        TrafficSign(const std::string& objectID, int x, int y, const std::string& txt);
+
+        const std::string& getText() const;
+    
+};
+
+class StationaryVehicles : public StaticObject {
+    public:
+        StationaryVehicles(const std::string& objectID, int x, int y);
+};
+
+class Car : public MovingObject {
+    public:
+        Car(const std::string& objectID, int x, int y, Direction d);
+        
+};
+
+class Bike : public MovingObject {
+    public:
+        Bike(const std::string& objectID, int x, int y, Direction d);
+        
+};
+
 #endif

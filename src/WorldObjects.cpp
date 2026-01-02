@@ -65,3 +65,67 @@ int MovingObject::getSpeed() const {
 Direction MovingObject::getDirection() const {
     return direction;
 }
+
+TrafficLight::TrafficLight(const string& objectID, int x, int y):StaticObject(objectID, x, y, 'R'), state(RED), timer(0) {
+    cout << "Traffic light added (" << objectID << ")" << endl; 
+}
+
+void TrafficLight::update() {
+    timer++;
+
+    switch(state) {
+        case RED:
+            if (timer >= 4) {
+                state = GREEN;
+                glyph = 'G';
+                timer = 0;
+            }
+            break;
+
+        case GREEN:
+            if (timer >= 8) {
+                state = YELLOW;
+                glyph = 'Y';
+                timer = 0;
+            }
+            break;
+
+        case YELLOW:
+            if(timer >= 2) {
+                state = RED;
+                glyph = 'R';
+                timer = 0;
+            }
+            break;
+    }
+}
+
+LightState TrafficLight::getState() const {
+    return state;
+}
+
+TrafficSign::TrafficSign(const string& objectID, int x, int y, const string& txt):StaticObject(objectID, x, y, 'S'), text(txt) {
+    cout << "Traffic sign added (" << objectID << ")" << endl;
+
+}
+
+const string& TrafficSign::getText() const {
+    return text;
+}
+
+StationaryVehicles::StationaryVehicles(const string& objectID, int x, int y):StaticObject(objectID, x, y, 'P') {
+    cout << "Parked car added (" << objectID << ")" << endl;
+}
+
+Car::Car(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'C', 2, d) {
+    cout << "Moving car added (" << objectID << ")" << endl;
+}
+
+Bike::Bike(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'B', 1, d) {
+    cout << "Moving bike added (" << objectID << ")" << endl;
+}
+
+    
+
+
+
