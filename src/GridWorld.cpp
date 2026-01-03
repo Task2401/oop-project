@@ -61,7 +61,7 @@ void GridWorld::generateWorld(const SimSettings& settings) {
         for (int i = 0; i < settings.numStopSigns; i++) {
             Position signPos = getRandomEmptyPosition();
             string id = "STOP:" + to_string(i+1);
-            objects.push_back(new TrafficLight(id, signPos.x, signPos.y));
+            objects.push_back(new TrafficSign(id, signPos.x, signPos.y, "STOP"));
         }
 
         for (int i = 0; i < settings.numParkedCars; i++) {
