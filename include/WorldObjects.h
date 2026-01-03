@@ -89,7 +89,6 @@ class MovingObject : public WorldObjects {
 // --- Car ---
 class Car : public MovingObject {
     public:
-
         Car(const std::string& objectID, int x, int y, Direction d);
 };
 
