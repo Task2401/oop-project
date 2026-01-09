@@ -35,7 +35,7 @@ class Sensor {
 
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) = 0;
 
-        std::string& getId() const;
+        std::string getId() const;
 };
 
 class Lidar : public Sensor {
