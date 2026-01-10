@@ -46,13 +46,13 @@ class Lidar : public Sensor {
 
 class Radar : public Sensor {
     public:
-        Radar(const std::string sensorID);
+        Radar(const std::string& sensorID);
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
 
 class Camera : public Sensor {
     public:
-        Camera(const std::string sensorID);
+        Camera(const std::string& sensorID);
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
 
