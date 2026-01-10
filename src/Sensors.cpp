@@ -131,7 +131,7 @@ vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects
             if (movObjPos.x == carPos.x && movObjPos.y > carPos.y && movObjPos.y <= carPos.y + 12) inRange = true;
         }
 
-        else if (carDir = SOUTH) {
+        else if (carDir == SOUTH) {
             if (movObjPos.x == carPos.x && movObjPos.y < carPos.y && movObjPos.y >= carPos.y - 12) inRange = true;
         }
 
@@ -139,7 +139,7 @@ vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects
             if (movObjPos.y == carPos.y && movObjPos.x > carPos.x && movObjPos.x <= carPos.x + 12) inRange = true;
         }
 
-        else if (carDir = WEST) {
+        else if (carDir == WEST) {
             if (movObjPos.y == carPos.y && movObjPos.x < carPos.x && movObjPos.x >= carPos.x - 12) inRange = true;
         }
 
@@ -241,10 +241,10 @@ vector<SensorReading> Camera:: getReadings(const vector<WorldObjects*>& allObjec
             
             else r.type = "UNKNOWN";
 
-            double disFactor = 1.0 - (r.distance / 8.0);
-            if (disFactor < 0.0) disFactor = 0.0;
+            double distFactor = 1.0 - (r.distance / 8.0);
+            if (distFactor < 0.0) distFactor = 0.0;
 
-            r.confidence = applyNoise(baseAccuracy * disFactor);
+            r.confidence = applyNoise(baseAccuracy * distFactor);
             readings.push_back(r);
         }
     }
