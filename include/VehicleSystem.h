@@ -12,10 +12,8 @@ class GridWorld;
 class SelfDrivingCar : public MovingObject {
     private:
         SpeedState speedState;
-
         const GridWorld* world;
         double minConfidence;
-
         Lidar* lidar;
         Radar* radar;
         Camera* camera;
@@ -29,7 +27,12 @@ class SelfDrivingCar : public MovingObject {
 
         void turn(Direction newDirection);
         
-        void collectSensorData();
+        std::vector<SensorReading> fuseSensorData(
+            const std::vector<SensorReading>& lidarData, 
+            const std::vector<SensorReading>& radarData, 
+            const std::vector<SensorReading>& cameraData
+        );
+        
         void syncNavigationSystem();
         void executeMovement();
 

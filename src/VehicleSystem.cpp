@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 
 #include "../include/VehicleSystem.h"
 #include "../include/GridWorld.h"
@@ -50,13 +51,66 @@ void SelfDrivingCar::turn(Direction newDirection) {
     direction = newDirection;
 }
 
-void SelfDrivingCar::collectSensorData() {
-    if (world != nullptr) {
-        const vector<WorldObjects*>& objects = world->getObjects();
-        lidar->getReadings(objects, pos, direction);
-        radar->getReadings(objects, pos, direction);
-        camera->getReadings(objects, pos, direction);
+vector<SensorReading> SelfDrivingCar::fuseSensorData(
+    const vector<SensorReading>& lidarData,
+    const vector<SensorReading>& radarData,
+    const vector<SensorReading>& cameraData
+)
+{
+    map<string, vector<SensorReading>> groupedData;
+
+    for (const auto& r : lidarData)
+        groupedData[r.objectID].push_back(r);
+
+    for (const auto& r: radarData)
+        groupedData[r.objectID].push_back(r);
+
+    for (const auto& r : cameraData)
+        groupedData[r.objectID].push_back(r);
+
+    vector<SensorReading> finalResults;
+
+    for (const auto& [id, readings] : groupedData) {
+        SensorReading merged = createEmptyReading();
+        merged.objectID = id;
+
+        double totalScore = 0.0;
+        double weightedDist = 0.0;
+        int count = 0;
+        bool sawBike = false;
+
+        for (const auto& r : readings) {
+            totalScore += r.confidence;
+            weightedDist += r.distance * r.confidence;
+
+            if (r.type != "UNKNOWN") merged.type = r.type;
+
+            if (r.type == "TRAFFIC_LIGHT" && r.lightState != RED)
+                merged.lightState = r.lightState;
+
+            if (r.type == "TRAFFIC_SIGN" && r.signText != "N/A")
+                merged.signText = r.signText;
+
+            if (r.speed != 0)
+                merged.speed = r.speed;
+
+            if (r.type == "BIKE")
+                sawBike = true;
+
+            count++;
+        }
+
+        if (totalScore > 0) {
+            merged.distance = weightedDist / totalScore;
+            merged.confidence = totalScore / count;
+            merged.pos = readings[0].pos;
+        }
+
+        if (merged.confidence >= this->minConfidence || sawBike)
+            finalResults.push_back(merged);
     }
+
+    return finalResults;
 }
 
 void SelfDrivingCar::syncNavigationSystem() {
