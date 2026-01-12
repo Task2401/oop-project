@@ -6,6 +6,7 @@
 
 enum SpeedState {STOPPED, HALF_SPEED, FULL_SPEED};
 
+struct SimSettings;
 class GridWorld;
 
 class SelfDrivingCar : public MovingObject {
@@ -13,12 +14,14 @@ class SelfDrivingCar : public MovingObject {
         SpeedState speedState;
 
         const GridWorld* world;
+        double minConfidence;
+
         Lidar* lidar;
         Radar* radar;
         Camera* camera;
 
     public:
-        SelfDrivingCar(int startX, int startY, const GridWorld* worldRef);
+        SelfDrivingCar(int startX, int startY, const GridWorld* worldRef, const SimSettings& settings);
         ~SelfDrivingCar();
 
         void accelerate();

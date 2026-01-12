@@ -15,7 +15,7 @@ struct SimSettings {
     int numStopSigns;
     int numTrafficLights;
     int simulationTicks;
-    int minConfidenceThreshold ;
+    double minConfidenceThreshold ;
     bool helpRequested;
     std::vector<Position> gpsTargets;
 };

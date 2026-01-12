@@ -2,10 +2,14 @@
 
 #include "../include/VehicleSystem.h"
 #include "../include/GridWorld.h"
+#include "../include/Simulation.h"
 
 using namespace std;
 
-SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef) : MovingObject("SDC", startX, startY, '@', 0,  NORTH), speedState(STOPPED), world(wolrdRef) {
+SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef, const SimSettings& settings) : MovingObject("SDC", startX, startY, '@', 0,  NORTH), speedState(STOPPED), world(wolrdRef) {
+    this->minConfidence = settings.minConfidenceThreshold;
+    
+    
     lidar = new Lidar("LIDAR");
     radar = new Radar("RADAR");
     camera = new Camera("CAMERA");

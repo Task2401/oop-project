@@ -20,7 +20,7 @@ void printHelp() {
     cout << " --numStopSigns <n> Number of stop signs (default : 2)" << endl;
     cout << " --numTrafficLights <n> Number of traffic lights (default : 2)" << endl;
     cout << " --simulationTicks <n> Maximum simulation ticks (default : 100)" << endl;
-    cout << " --minConfidenceThreshold <n> Minimum confidence cutoff (default : 40)" << endl;
+    cout << " --minConfidenceThreshold <n> Minimum confidence cutoff (default : 0.4)" << endl;
     cout << " --gps <x1> <y1> [x2 y2 ...] GPS target coordinates (required)" << endl;
     cout << " --help Show this help message" << endl << endl;
     cout << "Example usage:" << endl;
@@ -39,7 +39,7 @@ SimSettings parseArguments(int argc, char**argv) {
     settings.numStopSigns = 2;
     settings.numTrafficLights = 2;
     settings.simulationTicks = 100;
-    settings.minConfidenceThreshold = 40;
+    settings.minConfidenceThreshold = 0.4;
 
     settings.helpRequested = false;
 
@@ -89,7 +89,7 @@ SimSettings parseArguments(int argc, char**argv) {
         }
 
         else if (arg == "--minConfidenceThreshold") {
-            if ((i + 1) < argc) settings.minConfidenceThreshold = atoi(argv[++i]);
+            if ((i + 1) < argc) settings.minConfidenceThreshold = atof(argv[++i]);
         }
 
         else if (arg == "--gps") {
