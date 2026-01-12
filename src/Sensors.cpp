@@ -60,7 +60,7 @@ vector<SensorReading> Lidar::getReadings(const vector<WorldObjects*>& allObjects
             if (objPos.x == carPos.x && objPos.y == carPos.y) continue;
             
             SensorReading r = createEmptyReading();
-            r.objectID = getId();
+            r.objectID = obj->getId();
             r.pos = objPos;
             r.distance = dist;
 
