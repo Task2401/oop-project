@@ -50,7 +50,7 @@ Position GridWorld::getRandomEmptyPosition() {
 
 void GridWorld::generateWorld(const SimSettings& settings) {
         Position carStart = getRandomEmptyPosition();
-        car = new SelfDrivingCar(carStart.x, carStart.y);   
+        car = new SelfDrivingCar(carStart.x, carStart.y, this);   
 
         for (int i = 0; i < settings.numTrafficLights; i++) {
             Position lightPos = getRandomEmptyPosition();
