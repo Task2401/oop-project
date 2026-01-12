@@ -97,9 +97,8 @@ void GridWorld::update() {
         if (objPos.x < 0 || objPos.x >= width || objPos.y < 0 || objPos.y >= height) {
             delete *objIndex;
             objIndex = objects.erase(objIndex);
-        }else {
-            objIndex++;
         }
+        else objIndex++;
     }
     if (car != nullptr) car->update();
 }
