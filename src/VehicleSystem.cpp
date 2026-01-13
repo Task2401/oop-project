@@ -9,11 +9,13 @@ using namespace std;
 
 SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef, const SimSettings& settings) : MovingObject("SDC", startX, startY, '@', 0,  NORTH), speedState(STOPPED), world(wolrdRef) {
     this->minConfidence = settings.minConfidenceThreshold;
-    
+    this->gpsTargets = settings.gpsTargets;
+    this->currentTargetIndex = 0;
     
     lidar = new Lidar("LIDAR");
     radar = new Radar("RADAR");
     camera = new Camera("CAMERA");
+
     cout << "SDC created (" << id << ") sensors online" << endl;
 }
 
@@ -114,12 +116,94 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
 }
 
 void SelfDrivingCar::syncNavigationSystem() {
+    if (world == nullptr) return;
 
+    const vector<WorldObjects*> objects = world->getObjects();
+    vector<SensorReading> lidarData = lidar->getReadings(objects, pos, direction);
+    vector<SensorReading> radarData = radar->getReadings(objects, pos, direction);
+    vector<SensorReading> cameraData = camera->getReadings(objects, pos, direction);
+
+    vector<SensorReading> currentObstacles = fuseSensorData(lidarData, radarData, cameraData);
+
+    bool approachingTarget = false;
+
+    if (currentTargetIndex < gpsTargets.size()) {
+        Position target = gpsTargets[currentTargetIndex];
+
+        if (pos.x == target.x && pos.y == target.y) {
+            cout << "[NAV] Reached Target #" << currentTargetIndex + 1 << " at (" << pos.x << "," << pos.y << ")" << endl;
+            currentTargetIndex++;
+        }
+
+        else {
+            int distToTarget = abs(pos.x - target.x) + abs(pos.y - target.y);
+            
+            if (distToTarget <= 5) 
+                approachingTarget = true;
+
+            if(pos.x < target.x)
+                turn(EAST);
+
+            else if (pos.x > target.x)
+                turn(WEST);
+
+            else if (pos.y < target.y)
+                turn(NORTH);
+
+            else if (pos.y > target.y)
+                turn(SOUTH);
+        }
+    }
+
+    else {
+        if (speedState != STOPPED) decelerate();
+        return;
+    }
+
+    bool safetyStop = false;
+    bool cautionarySlow = false;
+
+    for (const auto& objs : currentObstacles) {
+        if (objs.type == "TRAFFIC_LIGHT") {
+            if (objs.lightState == RED && objs.distance <= 3.0) safetyStop = true;
+            if (objs.lightState == YELLOW && objs.distance <= 3.0) cautionarySlow = true;
+        }
+
+        if (objs.type == "CAR" || objs.type == "BIKE" || objs.type == "PARKED_CAR") {
+            if (objs.distance <= 2.0) 
+                safetyStop = true;
+        }
+
+        if (objs.type == "TRAFFIC_SIGN" && objs.signText == "STOP" && objs.distance <= 1.0) {
+            safetyStop = true; 
+        }
+    }
+
+    if (safetyStop) {
+        if (speedState != STOPPED) decelerate();
+    }
+
+    else if (cautionarySlow || approachingTarget) {
+        if (speedState == FULL_SPEED) decelerate();
+        else if (speedState == STOPPED) accelerate();
+    }
+
+    else {
+        if (speedState != FULL_SPEED) accelerate();
+    }
 }
 
 void SelfDrivingCar::executeMovement() {
     move();
-    if (speed == 0) accelerate();
+}
+
+void SelfDrivingCar::update() {
+    syncNavigationSystem();
+    executeMovement();
+}
+
+bool SelfDrivingCar::hasReachedDestination() const{
+    return currentTargetIndex >= gpsTargets.size();
 }
 
 string SelfDrivingCar::getStatus() const {

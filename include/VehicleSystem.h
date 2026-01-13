@@ -17,12 +17,16 @@ class SelfDrivingCar : public MovingObject {
         Lidar* lidar;
         Radar* radar;
         Camera* camera;
+        std::vector<Position> gpsTargets;
+        int currentTargetIndex;
 
     public:
         SelfDrivingCar(int startX, int startY, const GridWorld* worldRef, const SimSettings& settings);
+
         ~SelfDrivingCar();
 
         void accelerate();
+
         void decelerate();
 
         void turn(Direction newDirection);
@@ -34,11 +38,14 @@ class SelfDrivingCar : public MovingObject {
         );
         
         void syncNavigationSystem();
+        
         void executeMovement();
 
         virtual void update() override;
 
         std::string getStatus() const;
+
+        bool hasReachedDestination() const;
 };
 
 #endif
