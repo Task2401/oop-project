@@ -47,10 +47,14 @@ Lidar::Lidar(const string& sensorId) : Sensor(sensorId, 0.99) {
     simLog << "[+LIDAR: " << id << "] Lidar sensor ready Sensing with pew pews!" << endl;
 }
 
+Lidar::~Lidar() {
+    simLog << "[-LIDAR: " << id << "] Lidar offline" << endl;
+}
+
 vector<SensorReading> Lidar::getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
     vector<SensorReading> readings;
 
-    for (int i = 0; i < allObjects.size(); i++) {
+    for (size_t i = 0; i < allObjects.size(); i++) {
         WorldObjects* obj = allObjects[i];
         Position objPos = obj->getPosition();
         double dist = calculateDistance(carPos, objPos);
@@ -114,10 +118,14 @@ Radar::Radar(const string& sensorId) : Sensor(sensorId, 0.99) {
     simLog << "[+RADAR: " << id << "] Radar sensor ready I'm a Radio star!" << endl;
 }
 
+Radar::~Radar() {
+    simLog << "[-RADAR: " << id << "] Radar offline" << endl;
+}
+
 vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
     vector<SensorReading> readings;
 
-    for (int i = 0; i < allObjects.size(); i++) {
+    for (size_t i = 0; i < allObjects.size(); i++) {
         WorldObjects* obj = allObjects[i];
         char objSymbol = obj->getGlyph();
 
@@ -165,8 +173,13 @@ vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects
     return readings;
 }
 
+
 Camera::Camera(const string& sensorId) : Sensor(sensorId, 0.95) {
     simLog << "[+CAMERA: " << id << "] Camera sensor ready Say cheese!" << endl;
+}
+
+Camera::~Camera() {
+    simLog << "[-CAMERA: " << id << "] Camera offline" << endl;
 }
 
 vector<SensorReading> Camera:: getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
@@ -203,7 +216,7 @@ vector<SensorReading> Camera:: getReadings(const vector<WorldObjects*>& allObjec
             break;
     }
 
-    for (int i = 0; i < allObjects.size(); i++) {
+    for (size_t i = 0; i < allObjects.size(); i++) {
         WorldObjects* obj = allObjects[i];
         Position objPos = obj->getPosition();
 

@@ -97,7 +97,7 @@ class Car : public MovingObject {
 // --- Bike ---
 class Bike : public MovingObject {
     public:
-        Bike(const std::string& objectID, int x, int y, Direction d);  
+        Bike(const std::string& objectID, int x, int y, Direction d);
 };
 
 #endif

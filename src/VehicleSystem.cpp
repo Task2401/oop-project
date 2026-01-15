@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cmath>
+#include <vector>
+#include <string>
 #include <map>
 
 #include "../include/VehicleSystem.h"
@@ -16,13 +19,15 @@ SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef
     radar = new Radar("RADAR");
     camera = new Camera("CAMERA");
 
-    simLog << "SDC created (" << id << ") sensors online" << endl;
+    simLog << "[+SDC: " << id << "] SDC created sensors online" << endl;
 }
 
 SelfDrivingCar::~SelfDrivingCar() {
     delete lidar;
     delete radar;
     delete camera;
+
+    simLog << "[-SDC: " << id << "] SDC destroyed" << endl;
 }
 
 void SelfDrivingCar::accelerate() {
@@ -72,7 +77,10 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
 
     vector<SensorReading> finalResults;
 
-    for (const auto& [id, readings] : groupedData) {
+    for (auto const& entry : groupedData) {
+        string id = entry.first;
+        vector<SensorReading> readings = entry.second;
+
         SensorReading merged = createEmptyReading();
         merged.objectID = id;
 
@@ -116,7 +124,7 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
 }
 
 void SelfDrivingCar::syncNavigationSystem() {
-    if (world == nullptr) return;
+   if (world == nullptr) return;
 
     const vector<WorldObjects*> objects = world->getObjects();
     vector<SensorReading> lidarData = lidar->getReadings(objects, pos, direction);
@@ -125,57 +133,72 @@ void SelfDrivingCar::syncNavigationSystem() {
 
     vector<SensorReading> currentObstacles = fuseSensorData(lidarData, radarData, cameraData);
 
-    bool approachingTarget = false;
+    if (currentTargetIndex >= (int) gpsTargets.size()) {
+        if (speedState != STOPPED) decelerate();
+        return;
+    }
 
-    if (currentTargetIndex < gpsTargets.size()) {
-        Position target = gpsTargets[currentTargetIndex];
+    Position target = gpsTargets[currentTargetIndex];
 
-        if (pos.x == target.x && pos.y == target.y) {
-            simLog << "[NAV] Reached Target #" << currentTargetIndex + 1 << " at (" << pos.x << "," << pos.y << ")" << endl;
-            currentTargetIndex++;
-        }
+    if (pos.x == target.x && pos.y == target.y) {
+        simLog << "[NAV] Reached Target #" << currentTargetIndex + 1 << " at (" << pos.x << "," << pos.y << ")" << endl;
+        currentTargetIndex++;
 
+        if (currentTargetIndex < (int) gpsTargets.size()) {
+            target = gpsTargets[currentTargetIndex];
+        } 
+        
         else {
-            int distToTarget = abs(pos.x - target.x) + abs(pos.y - target.y);
-            
-            if (distToTarget <= 5) 
-                approachingTarget = true;
-
-            if(pos.x < target.x)
-                turn(EAST);
-
-            else if (pos.x > target.x)
-                turn(WEST);
-
-            else if (pos.y < target.y)
-                turn(NORTH);
-
-            else if (pos.y > target.y)
-                turn(SOUTH);
+            if (speedState != STOPPED) decelerate();
+            return;
         }
     }
 
-    else {
-        if (speedState != STOPPED) decelerate();
-        return;
+    bool approachingTarget = false;
+    int distToTarget = abs(pos.x - target.x) + abs(pos.y - target.y);
+            
+    if (distToTarget <= 5) 
+        approachingTarget = true;
+
+    int dx = target.x - pos.x;
+    int dy = target.y - pos.y;
+
+    if (abs(dx) >= abs(dy)) {
+        if (dx > 0) turn(EAST);
+        else if (dx < 0) turn(WEST);
+
+        else {
+             if (dy > 0) turn(NORTH);
+             else if (dy < 0) turn(SOUTH);
+        }
+        
+    } else {
+        if (dy > 0) turn(NORTH);
+        else if (dy < 0) turn(SOUTH);
     }
 
     bool safetyStop = false;
     bool cautionarySlow = false;
 
-    for (const auto& objs : currentObstacles) {
-        if (objs.type == "TRAFFIC_LIGHT") {
-            if (objs.lightState == RED && objs.distance <= 3.0) safetyStop = true;
-            if (objs.lightState == YELLOW && objs.distance <= 3.0) cautionarySlow = true;
-        }
-
-        if (objs.type == "CAR" || objs.type == "BIKE" || objs.type == "PARKED_CAR") {
-            if (objs.distance <= 2.0) 
+    for (const auto& obj : currentObstacles) {
+        if (obj.type == "TRAFFIC_LIGHT") {
+            if (obj.lightState == RED && obj.distance <= 3.0) {
                 safetyStop = true;
+                simLog << "[AUTOPILOT] Red light ahead! Stopping." << endl;
+            }
+            if (obj.lightState == YELLOW && obj.distance <= 3.0) cautionarySlow = true;
+        }
+        
+        if (obj.type == "TRAFFIC_SIGN" && obj.signText == "STOP" && obj.distance <= 1.0) {
+            safetyStop = true; 
+            simLog << "[AUTOPILOT] STOP sign! Stopping." << endl;
         }
 
-        if (objs.type == "TRAFFIC_SIGN" && objs.signText == "STOP" && objs.distance <= 1.0) {
-            safetyStop = true; 
+        if (obj.type == "CAR" || obj.type == "BIKE" || obj.type == "PARKED_CAR") {
+            if (obj.distance <= 1.0) {
+                safetyStop = true;
+                simLog << "[AUTOPILOT] Obstacle detected (" << obj.type << ")! Stopping." << endl;
+            }
         }
     }
 
@@ -198,12 +221,15 @@ void SelfDrivingCar::executeMovement() {
 }
 
 void SelfDrivingCar::update() {
-    syncNavigationSystem();
-    executeMovement();
+   syncNavigationSystem();
+   if (speed > 0) {
+        move();
+        simLog << "[SDC] Moved to (" << pos.x << ", " << pos.y << ")" << endl;
+    }
 }
 
 bool SelfDrivingCar::hasReachedDestination() const{
-    return currentTargetIndex >= gpsTargets.size();
+    return currentTargetIndex >= (int) gpsTargets.size();
 }
 
 string SelfDrivingCar::getStatus() const {

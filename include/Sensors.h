@@ -44,6 +44,7 @@ class Sensor {
 class Lidar : public Sensor {
     public:
         Lidar(const std::string& sensorID);
+        virtual ~Lidar();
         
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) override;     
 };
@@ -51,6 +52,7 @@ class Lidar : public Sensor {
 class Radar : public Sensor {
     public:
         Radar(const std::string& sensorID);
+        virtual ~Radar();
 
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
@@ -58,6 +60,7 @@ class Radar : public Sensor {
 class Camera : public Sensor {
     public:
         Camera(const std::string& sensorID);
+        virtual ~Camera();
 
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };

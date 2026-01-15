@@ -1,6 +1,6 @@
 *.o
 *.obj
-*.exe
+oopproj_2025
 main
 obj/
 logs/

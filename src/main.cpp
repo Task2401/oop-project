@@ -30,25 +30,25 @@ char getCellGlyph(GridWorld& world, int x, int y) {
 
     if(glyphsInCell.empty()) return '.';
 
-    for (int i = 0; i < glyphsInCell.size(); i++) 
+    for (size_t i = 0; i < glyphsInCell.size(); i++) 
         if (glyphsInCell[i] == 'R') return 'R';
 
-    for (int i = 0; i < glyphsInCell.size(); i++)
+    for (size_t i = 0; i < glyphsInCell.size(); i++)
         if (glyphsInCell[i] == 'Y') return 'Y';
 
-    for (int i = 0; i < glyphsInCell.size(); i++) 
+    for (size_t i = 0; i < glyphsInCell.size(); i++) 
         if (glyphsInCell[i] == 'S') return 'S';
 
-    for (int i = 0; i < glyphsInCell.size(); i++)
+    for (size_t i = 0; i < glyphsInCell.size(); i++)
         if (glyphsInCell[i] == 'B') return 'B';
     
-    for (int i = 0; i < glyphsInCell.size(); i++)
+    for (size_t i = 0; i < glyphsInCell.size(); i++)
         if (glyphsInCell[i] == 'C') return 'C';
         
-    for (int i = 0; i < glyphsInCell.size(); i++)
+    for (size_t i = 0; i < glyphsInCell.size(); i++)
         if (glyphsInCell[i] == 'G') return 'G';
 
-    for (int i = 0; i < glyphsInCell.size(); i++)
+    for (size_t i = 0; i < glyphsInCell.size(); i++)
         if (glyphsInCell[i] == 'P') return 'P';
 
     return '?';
@@ -118,41 +118,43 @@ int main(int argc, char**argv) {
 
     srand(settings.seed);
 
-    GridWorld world(settings.dimX, settings.dimY);
-    world.generateWorld(settings);
+    {
+        GridWorld world(settings.dimX, settings.dimY);
+        world.generateWorld(settings);
 
-    visualizationFull(world);
+        visualizationFull(world);
 
-    bool simulationRunning = true;
+        bool simulationRunning = true;
 
-    while (simulationRunning && world.getTicks() < settings.simulationTicks) {
-        world.update();
-        visualizationPov(world, 5);
-        SelfDrivingCar* car = world.getCar();
+        while (simulationRunning && world.getTicks() < settings.simulationTicks) {
+            world.update();
+            visualizationPov(world, 5);
+            SelfDrivingCar* car = world.getCar();
 
-        if (world.isCarOutOfBounds()) {
-            cout << "Simulation Ended: Car went out of bounds!" << endl;
-            simLog << "Simulation Ended: Car went out of bounds!" << endl;
-            simulationRunning = false;
+            if (world.isCarOutOfBounds()) {
+                cout << "Simulation Ended: Car went out of bounds!" << endl;
+                simLog << "Simulation Ended: Car went out of bounds!" << endl;
+                simulationRunning = false;
+            }
+
+            else if (car != nullptr && car->hasReachedDestination() && car->getSpeed() == 0) {
+                cout << "Simulation Ended: Destination Reached!" << endl;
+                simLog << "Simulation Ended: Destination Reached!" << endl;
+                simulationRunning = false;
+            }
+
+            else if (car == nullptr) {
+                cout << "Simulation Ended: Car is gone!" << endl;
+                simulationRunning = false;
+            }
+
         }
 
-        else if (car != nullptr && car->hasReachedDestination() && car->getSpeed() == 0) {
-            cout << "Simulation Ended: Destination Reached!" << endl;
-            simLog << "Simulation Ended: Destination Reached!" << endl;
-            simulationRunning = false;
-        }
+        visualizationFull(world);
 
-        else if (car == nullptr) {
-            cout << "Simulation Ended: Car is gone!" << endl;
-            simulationRunning = false;
-        }
-
+        cout << "Simulation finished after " << world.getTicks() << " ticks." << endl;
+        simLog << "Simulation finished after " << world.getTicks() << " ticks." << endl;
     }
-
-    visualizationFull(world);
-
-    cout << "Simulation finished after " << world.getTicks() << " ticks." << endl;
-    simLog << "Simulation finished after " << world.getTicks() << " ticks." << endl;
 
     simLog.close();
     return 0;

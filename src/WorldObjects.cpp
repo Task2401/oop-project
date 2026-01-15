@@ -8,10 +8,11 @@ using namespace std;
 
 // --- WorldObjects ---
 WorldObjects::WorldObjects(const string& objectID, int x, int y, char g):id(objectID), pos{x, y}, glyph(g) {
-    simLog << "World Object Created (" << id << ")" << endl;
+    // simLog << "World Object Created (" << id << ")" << endl;
 }
 
 WorldObjects :: ~WorldObjects() {
+    simLog << "[-OBJECT: " << id << "] destroyed." << endl;
 }
 
 const string& WorldObjects::getId() const {
@@ -28,7 +29,7 @@ char WorldObjects::getGlyph() const {
 
 // --- StaticObject ---
 StaticObject::StaticObject(const string& objectID, int x, int y, char g) : WorldObjects(objectID, x , y, g) {
-    simLog << "StaticOject Created (" << objectID << ")" << endl;
+    // simLog << "StaticOject Created (" << objectID << ")" << endl;
 }
 
 void StaticObject::update() {
@@ -37,7 +38,7 @@ void StaticObject::update() {
 
 // --- TrafficLight ---
 TrafficLight::TrafficLight(const string& objectID, int x, int y):StaticObject(objectID, x, y, 'R'), state(RED), timer(0) {
-    simLog << "Traffic light added (" << objectID << ")" << endl; 
+    simLog << "[+TRAFFIC_LIGHT: " << objectID << "] Traffic light added" << endl; 
 }
 
 void TrafficLight::update() {
@@ -76,7 +77,7 @@ LightState TrafficLight::getState() const {
 
 // --- TrafficSign ---
 TrafficSign::TrafficSign(const string& objectID, int x, int y, const string& txt):StaticObject(objectID, x, y, 'S'), text(txt) {
-    simLog << "Traffic sign added (" << objectID << ")" << endl;
+    simLog << "[+TRAFFIC_SIGN: " << objectID << "] Traffic sign added" << endl;
 }
 
 const string& TrafficSign::getText() const {
@@ -85,12 +86,12 @@ const string& TrafficSign::getText() const {
 
 // --- StationaryVehicles ---
 StationaryVehicles::StationaryVehicles(const string& objectID, int x, int y):StaticObject(objectID, x, y, 'P') {
-    simLog << "Parked car added (" << objectID << ")" << endl;
+    simLog << "[+PARKED_CAR: " << objectID << "] Parked car added" << endl;
 }
 
 // --- MovingObject ---
 MovingObject::MovingObject(const string& objectID, int x, int y, char g, int s, Direction d):WorldObjects(objectID, x, y , g), speed(s), direction(d) {
-    simLog << "Moving object created (" << objectID << ")" << endl;    
+    // simLog << "Moving object created (" << objectID << ")" << endl;    
 }
 
 void MovingObject::update() {
@@ -125,12 +126,12 @@ Direction MovingObject::getDirection() const {
 
 // --- Car ---
 Car::Car(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'C', 1, d) {
-    simLog << "Moving car added (" << objectID << ")" << endl;
+    simLog << "[+CAR: " << objectID << "] Moving car added" << endl;
 }
 
 // --- Bike ---
 Bike::Bike(const string& objectID, int x, int y, Direction d):MovingObject(objectID, x, y, 'B', 1, d) {
-    simLog << "Moving bike added (" << objectID << ")" << endl;
+    simLog << "[+BIKE: " << objectID << "] Moving bike added" << endl;
 }
 
     

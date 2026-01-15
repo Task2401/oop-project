@@ -6,12 +6,12 @@
 using namespace std;
 
 GridWorld::GridWorld(int dimX, int dimY):width(dimX), height(dimY), currentTick(0), car(NULL) {
-    simLog << "[+WORLD] World initialized" << width << "x" << height << endl;
+    simLog << "[+WORLD: GRID] World initialized " << width << "x" << height << endl;
 }
 
 GridWorld::~GridWorld() {
 
-    for(int i = 0; i < objects.size(); ++i) delete objects[i];
+    for(size_t i = 0; i < objects.size(); ++i) delete objects[i];
     objects.clear();
 
     if (car != nullptr) {
@@ -31,7 +31,7 @@ Position GridWorld::getRandomEmptyPosition() {
         y = rand() % height;
         occupied = false;
 
-        for (int i = 0 ; i < objects.size(); ++i) {
+        for (size_t i = 0 ; i < objects.size(); ++i) {
             Position objectPos = objects[i]->getPosition();
             if(objectPos.x == x && objectPos.y == y) {
                 occupied = true;
@@ -88,7 +88,7 @@ void GridWorld::generateWorld(const SimSettings& settings) {
 void GridWorld::update() {
     currentTick++;
 
-    for (int i = 0; i < objects.size(); ++i) objects[i]->update();
+    for (size_t i = 0; i < objects.size(); ++i) objects[i]->update();
 
     auto objIndex = objects.begin();
     while (objIndex != objects.end()) {
