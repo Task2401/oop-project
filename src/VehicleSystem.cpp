@@ -10,6 +10,9 @@
 
 using namespace std;
 
+// SDC Constructor.
+// Initializes the car at a starting position, loads GPS settings, and initializes sensors.
+
 SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef, const SimSettings& settings) : MovingObject("SDC", startX, startY, '@', 0,  NORTH), speedState(STOPPED), world(wolrdRef) {
     this->minConfidence = settings.minConfidenceThreshold;
     this->gpsTargets = settings.gpsTargets;
@@ -22,6 +25,9 @@ SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef
     simLog << "[+SDC: " << id << "] SDC created sensors online" << endl;
 }
 
+// SDC Destructor.
+// Cleans up dynamically allocated sensors.
+
 SelfDrivingCar::~SelfDrivingCar() {
     delete lidar;
     delete radar;
@@ -29,6 +35,8 @@ SelfDrivingCar::~SelfDrivingCar() {
 
     simLog << "[-SDC: " << id << "] SDC destroyed" << endl;
 }
+
+// Increases speed state: STOPPED -> HALF_SPEED -> FULL_SPEED.
 
 void SelfDrivingCar::accelerate() {
     if (speedState == STOPPED) {
@@ -42,6 +50,8 @@ void SelfDrivingCar::accelerate() {
     }
 }
 
+// Decreases speed state: FULL_SPEED -> HALF_SPEED -> STOPPED.
+
 void SelfDrivingCar::decelerate() {
     if (speedState == FULL_SPEED) {
         speedState = HALF_SPEED;
@@ -54,9 +64,16 @@ void SelfDrivingCar::decelerate() {
     }
 }
 
+// Sets a new direction for the car to move in.
+
 void SelfDrivingCar::turn(Direction newDirection) {
     direction = newDirection;
 }
+
+// Sensor Fusion Algorithm.
+// Takes data from Lidar, Radar, and Camera, groups readings by Object ID, and merges them.
+// Calculates a weighted average for distance and confidence.
+// Prioritizes specific information like Traffic Light color from Camera or Speed from Radar.
 
 vector<SensorReading> SelfDrivingCar::fuseSensorData(
     const vector<SensorReading>& lidarData,
@@ -64,6 +81,7 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
     const vector<SensorReading>& cameraData
 )
 {
+    // Group all readings by their object ID
     map<string, vector<SensorReading>> groupedData;
 
     for (const auto& r : lidarData)
@@ -76,6 +94,8 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
         groupedData[r.objectID].push_back(r);
 
     vector<SensorReading> finalResults;
+
+    // Process each group to create a single fused reading
 
     for (auto const& entry : groupedData) {
         string id = entry.first;
@@ -116,6 +136,8 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
             merged.pos = readings[0].pos;
         }
 
+        // Only include objects that meet the confidence threshold or are Bikes (high priority)
+        
         if (merged.confidence >= this->minConfidence || sawBike)
             finalResults.push_back(merged);
     }
@@ -123,8 +145,18 @@ vector<SensorReading> SelfDrivingCar::fuseSensorData(
     return finalResults;
 }
 
+// Main logic for Autonomous Navigation.
+// 1. Gathers sensor data.
+// 2. Fuses sensor data.
+// 3. Checks if current GPS target is reached.
+// 4. Calculates direction to next target.
+// 5. Analyzes obstacles for collision avoidance.
+// 6. Adjusts speed (Accelerate/Decelerate/Stop).
+
 void SelfDrivingCar::syncNavigationSystem() {
    if (world == nullptr) return;
+ 
+    // Gather Raw Data
 
     const vector<WorldObjects*> objects = world->getObjects();
     vector<SensorReading> lidarData = lidar->getReadings(objects, pos, direction);
@@ -133,6 +165,8 @@ void SelfDrivingCar::syncNavigationSystem() {
 
     vector<SensorReading> currentObstacles = fuseSensorData(lidarData, radarData, cameraData);
 
+    // Target Management
+    
     if (currentTargetIndex >= (int) gpsTargets.size()) {
         if (speedState != STOPPED) decelerate();
         return;
@@ -154,6 +188,8 @@ void SelfDrivingCar::syncNavigationSystem() {
         }
     }
 
+    // Pathfinding / Steering
+    
     bool approachingTarget = false;
     int distToTarget = abs(pos.x - target.x) + abs(pos.y - target.y);
             
@@ -177,6 +213,8 @@ void SelfDrivingCar::syncNavigationSystem() {
         else if (dy < 0) turn(SOUTH);
     }
 
+    // Obstacle Avoidance Logic
+    
     bool safetyStop = false;
     bool cautionarySlow = false;
 
@@ -202,6 +240,8 @@ void SelfDrivingCar::syncNavigationSystem() {
         }
     }
 
+    // Speed Control Execution
+    
     if (safetyStop) {
         if (speedState != STOPPED) decelerate();
     }
@@ -216,9 +256,13 @@ void SelfDrivingCar::syncNavigationSystem() {
     }
 }
 
+// Physically updates the car's position in the world based on its speed and direction.
+
 void SelfDrivingCar::executeMovement() {
     move();
 }
+
+// Update loop for the car. Calls syncing method and moves if speed > 0.
 
 void SelfDrivingCar::update() {
    syncNavigationSystem();
@@ -228,9 +272,13 @@ void SelfDrivingCar::update() {
     }
 }
 
+// Returns true if all GPS targets have been visited.
+
 bool SelfDrivingCar::hasReachedDestination() const{
     return currentTargetIndex >= (int) gpsTargets.size();
 }
+
+// Returns the string representation of the current speed state.
 
 string SelfDrivingCar::getStatus() const {
     switch(speedState) {

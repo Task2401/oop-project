@@ -6,6 +6,8 @@
 
 #include "Common.h"
 #include "WorldObjects.h"
+ 
+// Structure containing data returned by a sensor for a specific object
 
 struct SensorReading{
     std::string objectID;
@@ -18,9 +20,13 @@ struct SensorReading{
     std::string signText;
     LightState lightState;
 };
-
+ 
+// Helper to create a default reading
+ 
 SensorReading createEmptyReading();
 
+// Abstract base class for all sensors
+ 
 class Sensor {
     protected:
         std::string id;
@@ -36,10 +42,14 @@ class Sensor {
 
         virtual ~Sensor();
 
+        // Pure virtual function to get readings from the environment
+ 
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) = 0;
 
         std::string getId() const;
 };
+ 
+// Lidar Sensor: Accurate short-range 360 detection
 
 class Lidar : public Sensor {
     public:
@@ -48,6 +58,8 @@ class Lidar : public Sensor {
         
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) override;     
 };
+ 
+// Radar Sensor: Detects moving objects at longer range
 
 class Radar : public Sensor {
     public:
@@ -57,6 +69,8 @@ class Radar : public Sensor {
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
 
+// Camera Sensor: Identifies object types/states (signs, lights) in FOV
+ 
 class Camera : public Sensor {
     public:
         Camera(const std::string& sensorID);

@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "Common.h"
+ 
+// Stores all configuration parameters for the simulation
 
 struct SimSettings {
     int seed;
@@ -19,9 +21,13 @@ struct SimSettings {
     bool helpRequested;
     std::vector<Position> gpsTargets;
 };
+ 
+// Parses command line arguments into SimSettings
 
 SimSettings parseArguments(int argc, char**argv);
 
+// Displays help message to console
+ 
 void printHelp();
 
 #endif

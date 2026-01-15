@@ -8,6 +8,9 @@
 #include "WorldObjects.h"
 #include "VehicleSystem.h"
 #include "Simulation.h"
+ 
+// Represents the simulation environment (grid).
+// Manages all dynamic and static objects and the self-driving car.
 
 class GridWorld {
     private:
@@ -16,19 +19,35 @@ class GridWorld {
         int currentTick;
         std::vector<WorldObjects*> objects;
         SelfDrivingCar* car;
+        
+        // Helper to find a free cell
+     
         Position getRandomEmptyPosition();
 
     public:
+        
+        // Constructor
+     
         GridWorld(int dimX, int dimY);
-
+ 
+        // Destructor
+        
         ~GridWorld();
-
+        
+        // Populates grid with objects
+         
         void generateWorld(const SimSettings& settings);
 
-        void update();
+        // Updates state of world and objects
 
+        void update();
+ 
+        // Checks boundary conditions for car
+ 
         bool isCarOutOfBounds() const;
 
+        // Getters
+         
         int getWidth() const;
         
         int getHeight() const;

@@ -4,10 +4,15 @@
 #include "WorldObjects.h"
 #include "Sensors.h"
 
+ 
+// Enum defining possible speed levels
+
 enum SpeedState {STOPPED, HALF_SPEED, FULL_SPEED};
 
 struct SimSettings;
 class GridWorld;
+ 
+// Represents the autonomous vehicle with sensors and navigation logic
 
 class SelfDrivingCar : public MovingObject {
     private:
@@ -21,26 +26,45 @@ class SelfDrivingCar : public MovingObject {
         int currentTargetIndex;
 
     public:
-        SelfDrivingCar(int startX, int startY, const GridWorld* worldRef, const SimSettings& settings);
 
+        // Constructor that initializes car and sensors
+
+        SelfDrivingCar(int startX, int startY, const GridWorld* worldRef, const SimSettings& settings);
+ 
+        // Destructor cleaning up sensor memory
+    
         ~SelfDrivingCar();
+ 
+        // Increases speed state
 
         void accelerate();
 
-        void decelerate();
+        // Decreases speed state
 
+        void decelerate();
+ 
+        // Changes current moving direction
+        
         void turn(Direction newDirection);
+         
+        // Merges data from multiple sensors into a single consistent view
         
         std::vector<SensorReading> fuseSensorData(
             const std::vector<SensorReading>& lidarData, 
             const std::vector<SensorReading>& radarData, 
             const std::vector<SensorReading>& cameraData
         );
+         
+        // Main logic loop: Sense -> Plan -> Act
         
         void syncNavigationSystem();
-        
-        void executeMovement();
+         
+        // Applies movement updates
 
+        void executeMovement();
+         
+        // Called every tick to update car state
+        
         virtual void update() override;
 
         std::string getStatus() const;

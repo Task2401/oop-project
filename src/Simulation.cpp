@@ -8,6 +8,9 @@
 
 using namespace std;
 
+// Prints the help message clearly displaying usage instructions
+// and describing all available command-line arguments.
+
 void printHelp() {
     cout << "Self-Driving Car Simulation" << endl;
     cout << "Usage: " << endl;
@@ -26,6 +29,10 @@ void printHelp() {
     cout << "Example usage:" << endl;
     cout << " ./ oopproj_2025 --seed 12 --dimY 50 --gps 10 20 32 15" << endl;
 }
+
+// Parses command-line arguments to configuration the simulation settings.
+// Iterates through argv and populates the SimSettings structure.
+// Returns default values if arguments are not provided.
 
 SimSettings parseArguments(int argc, char**argv) {
     SimSettings settings;

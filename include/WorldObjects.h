@@ -7,10 +7,17 @@
 
 #include "Common.h"
 
+ 
+// Enum for cardinal directions
+ 
 enum Direction {NORTH, SOUTH, EAST, WEST};
+ 
+// Enum for Traffic Light colors
+
 enum LightState {RED, GREEN, YELLOW};
 
-// --- WorldObjects ---
+// WorldObjects -> Abstract base class for all entities in the grid
+ 
 class WorldObjects {
     protected:
         std::string id;
@@ -31,7 +38,8 @@ class WorldObjects {
         char getGlyph() const;
 };
 
-// --- StaticObject ---
+// StaticObject -> Objects that do not move (Signs, Lights, Parked Cars)
+ 
 class StaticObject : public WorldObjects {
     public:
         StaticObject(const std::string& objectID, int x, int y, char g);
@@ -39,7 +47,8 @@ class StaticObject : public WorldObjects {
         virtual void update() override;
 };
 
-// --- TrafficLight ---
+// TrafficLight -> Cycles through Red, Green, Yellow states
+
 class TrafficLight : public StaticObject {
     private:
         LightState state;
@@ -53,7 +62,8 @@ class TrafficLight : public StaticObject {
         LightState getState() const;
 };
 
-// --- TrafficSign ---
+// TrafficSign -> Represents a road sign with text (e.g. "STOP")
+ 
 class TrafficSign : public StaticObject {
     private:
         std::string text;
@@ -64,13 +74,15 @@ class TrafficSign : public StaticObject {
         const std::string& getText() const;
 };
 
-// --- StationaryVehicles ---
+// StationaryVehicles -> Represents a parked car (obstacle)
+ 
 class StationaryVehicles : public StaticObject {
     public:
         StationaryVehicles(const std::string& objectID, int x, int y);
 };
 
-// --- MovingObject ---
+// MovingObject -> Base class for dynamic objects (Cars, Bikes)
+ 
 class MovingObject : public WorldObjects {
     protected:
         int speed;
@@ -87,14 +99,16 @@ class MovingObject : public WorldObjects {
 
         Direction getDirection() const;
 };
-
-// --- Car ---
+ 
+// Car -> Represents other moving cars (traffic)
+ 
 class Car : public MovingObject {
     public:
         Car(const std::string& objectID, int x, int y, Direction d);
 };
 
-// --- Bike ---
+// Bike -> Represents moving bicycles
+ 
 class Bike : public MovingObject {
     public:
         Bike(const std::string& objectID, int x, int y, Direction d);
