@@ -20,10 +20,8 @@ struct SimSettings {
     std::vector<Position> gpsTargets;
 };
 
-
-
 SimSettings parseArguments(int argc, char**argv);
-void printHelp();
 
+void printHelp();
 
 #endif

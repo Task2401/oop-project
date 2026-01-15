@@ -24,13 +24,16 @@ SensorReading createEmptyReading();
 class Sensor {
     protected:
         std::string id;
+
         double baseAccuracy;
 
         double calculateDistance(Position pos1, Position pos2) const;
+
         double applyNoise(double conf) const;
 
     public:
         Sensor(const std::string& sensorID, double accuracy);
+
         virtual ~Sensor();
 
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) = 0;
@@ -41,18 +44,21 @@ class Sensor {
 class Lidar : public Sensor {
     public:
         Lidar(const std::string& sensorID);
+        
         virtual std::vector<SensorReading> getReadings(const std::vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) override;     
 };
 
 class Radar : public Sensor {
     public:
         Radar(const std::string& sensorID);
+
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
 
 class Camera : public Sensor {
     public:
         Camera(const std::string& sensorID);
+
         virtual std::vector<SensorReading> getReadings(const std::vector <WorldObjects*>& allObjects, Position carPos, Direction carDir) override;
 };
 

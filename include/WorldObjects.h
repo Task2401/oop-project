@@ -25,7 +25,9 @@ class WorldObjects {
         virtual void update() = 0;
 
         const std::string& getId() const;
+
         Position getPosition() const;
+
         char getGlyph() const;
 };
 
@@ -82,8 +84,8 @@ class MovingObject : public WorldObjects {
         void move();
 
         int getSpeed() const;
-        Direction getDirection() const;
 
+        Direction getDirection() const;
 };
 
 // --- Car ---
