@@ -16,7 +16,7 @@ SelfDrivingCar::SelfDrivingCar(int startX, int startY, const GridWorld* wolrdRef
     radar = new Radar("RADAR");
     camera = new Camera("CAMERA");
 
-    cout << "SDC created (" << id << ") sensors online" << endl;
+    simLog << "SDC created (" << id << ") sensors online" << endl;
 }
 
 SelfDrivingCar::~SelfDrivingCar() {
@@ -131,7 +131,7 @@ void SelfDrivingCar::syncNavigationSystem() {
         Position target = gpsTargets[currentTargetIndex];
 
         if (pos.x == target.x && pos.y == target.y) {
-            cout << "[NAV] Reached Target #" << currentTargetIndex + 1 << " at (" << pos.x << "," << pos.y << ")" << endl;
+            simLog << "[NAV] Reached Target #" << currentTargetIndex + 1 << " at (" << pos.x << "," << pos.y << ")" << endl;
             currentTargetIndex++;
         }
 

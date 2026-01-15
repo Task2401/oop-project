@@ -44,7 +44,7 @@ double Sensor::applyNoise(double conf) const {
 }
 
 Lidar::Lidar(const string& sensorId) : Sensor(sensorId, 0.99) {
-    cout << "[+LIDAR: " << id << "] Lidar sensor ready Sensing with pew pews!" << endl;
+    simLog << "[+LIDAR: " << id << "] Lidar sensor ready Sensing with pew pews!" << endl;
 }
 
 vector<SensorReading> Lidar::getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
@@ -111,7 +111,7 @@ vector<SensorReading> Lidar::getReadings(const vector<WorldObjects*>& allObjects
 }
 
 Radar::Radar(const string& sensorId) : Sensor(sensorId, 0.99) {
-    cout << "[+RADAR: " << id << "] Radar sensor ready I'm a Radio star!" << endl;
+    simLog << "[+RADAR: " << id << "] Radar sensor ready I'm a Radio star!" << endl;
 }
 
 vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
@@ -166,7 +166,7 @@ vector<SensorReading> Radar::getReadings(const vector<WorldObjects*>& allObjects
 }
 
 Camera::Camera(const string& sensorId) : Sensor(sensorId, 0.95) {
-    cout << "[+CAMERA: " << id << "] Camera sensor ready Say cheese!" << endl;
+    simLog << "[+CAMERA: " << id << "] Camera sensor ready Say cheese!" << endl;
 }
 
 vector<SensorReading> Camera:: getReadings(const vector<WorldObjects*>& allObjects, Position carPos, Direction carDir) {
