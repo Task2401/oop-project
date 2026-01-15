@@ -10,6 +10,8 @@
 
 using namespace std;
 
+ofstream simLog;
+
 char getCellGlyph(GridWorld& world, int x, int y) {
     SelfDrivingCar* car = world.getCar();
     if (car != nullptr) {
