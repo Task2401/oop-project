@@ -6,7 +6,7 @@
 using namespace std;
 
 GridWorld::GridWorld(int dimX, int dimY):width(dimX), height(dimY), currentTick(0), car(NULL) {
-    cout << "[+WORLD] World initialized" << width << "x" << height << endl;
+    simLog << "[+WORLD] World initialized" << width << "x" << height << endl;
 }
 
 GridWorld::~GridWorld() {
@@ -19,7 +19,7 @@ GridWorld::~GridWorld() {
         car = nullptr;
     }
 
-    cout << "[-WORLD] World destroyed." << endl;
+    simLog << "[-WORLD] World destroyed." << endl;
 }
 
 Position GridWorld::getRandomEmptyPosition() {
