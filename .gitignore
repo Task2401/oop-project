@@ -1,6 +1,7 @@
 *.o
 *.obj
-oopproj_2025
+avs
+avs.exe
 main
 obj/
 logs/
