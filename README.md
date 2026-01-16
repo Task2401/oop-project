@@ -44,7 +44,7 @@ Build the project using the provided Makefile:
 make
 ```
 **Windows (PowerShell / CMD):**
-```dos
+```powershell
 make
 # Or if using MinGW specifically:
 mingw32-make
@@ -60,7 +60,7 @@ Run the simulation with custom parameters (dimensions, traffic density, GPS targ
 ./avs --dimX 20 --dimY 20 --gps 5 5 15 15 --simulationTicks 200
 ```
 **Windows (PowerShell / CMD):**
-```dos
+```powershell
 .\avs.exe --dimX 20 --dimY 20 --gps 5 5 15 15 --simulationTicks 200
 ```
 
