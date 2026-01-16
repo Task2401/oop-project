@@ -1,91 +1,79 @@
-# Self Driving Car (OOP 2025 - 2026)
+# Autonomous Vehicle Simulation (C++ / OOP)
 
-**Μάθημα:** Αντικειμενοστραφής Προγραμματισμός
+![Language](https://img.shields.io/badge/language-C%2B%2B11-blue.svg)
+![Build](https://img.shields.io/badge/build-Make-green.svg)
+![License](https://img.shields.io/badge/license-MIT-orange.svg)
 
-**Εξάμηνο:** Χειμερινό 2025 - 2026
+A modular simulation of a self-driving car navigating a dynamic grid world. This project demonstrates advanced Object-Oriented Programming principles, Sensor Fusion algorithms, and autonomous decision-making logic.
 
-**Φοιτητής:** Αναστάσης - Χρήστος Κυρίος
+## Overview
+The simulation features an autonomous agent (@) that navigates a 2D environment populated with dynamic traffic (C, B), static obstacles (P), and traffic signaling (R, G, Y, S). The vehicle utilizes a multi-sensor array to perceive its surroundings and employs a weighted fusion algorithm to make real-time navigation decisions.
 
-**Αριθμός Μητρώου:** 1115202400101
+## Key Technical Features
 
+### 1. Sensor Fusion Engine
+The vehicle aggregates data from three distinct sensors to build a unified world model (implementation in VehicleSystem.cpp):
+* **Lidar:** 360-degree short-range detection with high precision.
+* **Radar:** Long-range forward detection specialized for moving targets.
+* **Camera:** Object classification (Traffic Lights/Signs) within a specific Field of View (FOV).
+* **Noise Simulation:** Sensors include a stochastic noise model (applyNoise) to simulate real-world imperfections.
 
-## Εντολές Μεταγλώττισης Και Εκτέλεσης
+### 2. Autonomous Navigation Logic
+* **Pathfinding:** Manhattan-distance routing to sequential GPS waypoints.
+* **Obstacle Avoidance:** Dynamic speed adjustment (Full/Half/Stop) based on object proximity.
+* **Safety Protocols:**
+    * **VRU Protection:** Priority tracking for Vulnerable Road Users (Bicycles).
+    * **Traffic Compliance:** Automatic adherence to Traffic Lights and STOP signs.
+
+### 3. Architecture (OOP)
+* **Polymorphism:** Abstract base class WorldObjects with specialized derived classes (MovingObject, StaticObject).
+* **Encapsulation:** Strict separation between the GridWorld environment and the VehicleSystem logic.
+* **Memory Management:** RAII principles and proper destructor chaining to ensure zero memory leaks.
+
+## Installation & Usage
+
+### Prerequisites
+* G++ Compiler (supporting C++11 standard)
+* GNU Make
+
+### Compilation
+Build the project using the provided Makefile:
 ```bash
 make
-./oopproj_2025 --help
-
 ```
 
-## Μεθοδολογία και Παραδοχές Σχεδίασης
-Σε αυτό το σημείο αναλύονται οι τεχνικές επιλογές, οι αναπαραστάσεις δεδομένων και οι βασικοί κανόνες που διέπουν την υλοποίηση της προσομοίωσης του αυτόνομου οχήματος.
+### Execution
 
- **Αναπαράσταση Δεδομένων και κόσμου**
- - **Σύστημα Συντεταγμένων:** Ο κόσμος αναπαρίσταται ως ένα δισδιάστατο πλέγμα (GridWorld), με το σημείο (0,0) να ορίζεται στην κάτω αριστερή γωνία του περιβάλλοντος.
+Run the simulation with custom parameters (dimensions, traffic density, GPS targets):
 
- - **Ταυτοποίηση Αντικειμένων:** Κάθε αντικείμενο φέρει μια μοναδική αλφαριθμητική ταυτότητα (ID) που προκύπτει από το όνομα της κατηγορίας του και έναν αύξοντα αριθμό, διευκολύνοντας την ιχνηλάτηση από τη μηχανή συγχώνευσης αισθητήρων.
+```bash
+./avs --dimX 20 --dimY 20 --gps 5 5 15 15 --simulationTicks 200
+```
 
- - **Δομή Μετρήσεων:** Οι πληροφορίες από τους αισθητήρες τυποποιούνται σε αντικείμενα τύπου `SensorReading`, εξασφαλίζοντας ομοιομορφία στα δεδομένα απόστασης, θέσης, ταχύτητας και βεβαιότητας.
+*Use `--help` to see all available configuration flags*
 
- **Κανόνες Λειτουργίας και Παραδοχές**
- - **Υπολογισμός Αποστάσεων:** Όλες οι αποστάσεις μεταξύ των κελιών του πλέγματος υπολογίζονται με βάση τη μετρική Manhattan (Taxicab distance), αθροίζοντας τις απόλυτες διαφορές των συντεταγμένων.
+### Visualization
 
- - **Κύκλος Φαναριών:** Τα φανάρια λειτουργούν με προκαθορισμένο κύκλο χρονικών βημάτων (ticks), μεταβαίνοντας από Κόκκινο (4 ticks) σε Πράσινο (8 ticks) και έπειτα σε Κίτρινο (2 ticks).
+```plaintext
+--- POV MAP (Radius: 5) ---
+. . . C . . .
+. . P . . . .
+. . . @ . . .  <-- Autonomous Vehicle
+. . . . . . .
+. . S . . . .
+---------------------------
+[SDC] Moved to (10, 11)
+[AUTOPILOT] Obstacle detected (CAR)! Stopping.
+```
 
- - **Περιορισμοί Αισθητήρων:** Υιοθετούνται οι περιορισμοί εμβέλειας και οπτικού πεδίου που ορίζει η εκφώνηση:
+- **@:** Autonomous Car
+- **C:** Traffic Car
+- **Bike:** Bike
+- **R/G/Y:** Traffic Light
+- **S:** Stop Sign
 
-    - **Lidar:** Παρέχει όραση 360 μοιρών (9x9 κελιά) αλλά δεν αναγνωρίζει χρώματα ή κείμενο.
+### Author
+**Anastasios - Christos Kyrios** *Software Engineer / Computer Science Student*
 
-    - **Radar:** Ανιχνεύει αποκλειστικά κινούμενα αντικείμενα σε ευθεία γραμμή μπροστά από το όχημα (εμβέλεια 12 κελιών).
-
-    - **Camera:** Εξειδικεύεται στην αναγνώριση χρωμάτων, κειμένου και κατηγοριοποίησης αντικειμένων σε πεδίο 7x7 κελιών.
-
-## Στρατηγική Πλοήγησης και Ασφάλειας
-
-- **Λήψη Αποφάσεων:** Η πλοήγηση βασίζεται στην επεξεργασία δεδομένων από τη Sensor Fusion Engine, η οποία εφαρμόζει σταθμισμένο μέσο όρο στις μετρήσεις για την παραγωγή μιας ενοποιημένης εικόνας του κόσμου.
-
-- **Διαχείριση Ταχύτητας:** Το όχημα προσαρμόζει την ταχύτητά του αυτόματα (επιτάχυνση/επιβράδυνση) ανάλογα με την απόστασή του από εμπόδια (2 κελιά), φανάρια (3 κελιά) ή τον τελικό στόχο GPS (5 κελιά).
-
-- **Προστασία Ποδηλάτων:** Εφαρμόζεται ο ειδικός κανόνας ασφαλείας σύμφωνα με τον οποίο αν έστω και ένας αισθητήρας ανιχνεύσει ποδήλατο, η μέτρηση διατηρείται στη μηχανή Fusion ανεξάρτητα από το όριο βεβαιότητας.
-
-## Βήματα Υλοποίησης και Ροής Προσομοίωσης
-Η λειτουργία του συστήματος βασίζεται σε έναν επαναλαμβανόμενο κύκλο ενεργειών που εκτελείται σε κάθε χρονικό βήμα (tick) της προσομοίωσης. Τα βήματα που ακολουθήθηκαν για την υλοποίηση αυτής της ροής είναι τα εξής:
-
-**Βήμα 1: Ανίχνευση Περιβάλλοντος (Sensing)**
-
-- Σε κάθε κύκλο, το αυτόνομο όχημα ενεργοποιεί τους τρεις αισθητήρες του (Lidar, Radar, Camera).
-
-- Κάθε αισθητήρας σαρρώνει το `GridWorld` και επιστρέφει μια λίστα από μετρήσεις (`SensorReading`), φιλτραρισμένες βάσει του οπτικού του πεδίου και των δυνατοτήτων του (π.χ. το Radar επιστρέφει μόνο κινούμενα αντικείμενα).
-
-**Βήμα 2: Συγχώνευση Δεδομένων (Sensor Fusion)**
-
-- Οι μετρήσεις από όλους τους αισθητήρες συγκεντρώνονται στη μηχανή Fusion.
-
-- Το σύστημα ομαδοποιεί τις μετρήσεις που αφορούν το ίδιο αντικείμενο βάσει του ID του.
-
-- Υπολογίζεται ένας σταθμισμένος μέσος όρος για την απόσταση και τη θέση, ενώ εφαρμόζονται οι κανόνες προτεραιότητας της κάμερας για τον προσδιορισμό των χρωμάτων και των πινακίδων.
-
-- Απορρίπτονται μετρήσεις με χαμηλή βεβαιότητα, εκτός αν πρόκειται για ποδήλατο.
-
-**Βήμα 3: Σχεδιασμός Πλοήγησης (Navigation Planning)**
-
-- Το σύστημα συγκρίνει την τρέχουσα θέση του οχήματος με τον τρέχοντα στόχο GPS.
-
-- Επιλέγεται η βέλτιστη κατεύθυνση (North, South, East, West) για τη μείωση της απόστασης Manhattan.
-
-- Ελέγχεται αν το όχημα έχει φτάσει στον στόχο, ώστε να μεταβεί στον επόμενο διαθέσιμο στόχο της λίστας.
-
-**Βήμα 4: Λήψη Αποφάσεων Ασφαλείας (Collision Avoidance & Rules)**
-
-- Το όχημα αναλύει τα ενοποιημένα δεδομένα από το Fusion για να εντοπίσει κινδύνους.
-
-- Αν εντοπιστεί εμπόδιο, κόκκινο φανάρι ή σήμα STOP σε κοντινή απόσταση, το σύστημα στέλνει εντολή επιβράδυνσης (decelerate) ή ακινητοποίησης.
-
-- Αν ο δρόμος είναι ελεύθερος, το σύστημα δίνει εντολή επιτάχυνσης (`accelerate`) μέχρι τη μέγιστη επιτρεπτή ταχύτητα.
-
-**Βήμα 5: Εκτέλεση Κίνησης και Καταγραφή (Execution & Logging)**
-
-- Το όχημα μετακινείται στη νέα του θέση στο πλέγμα.
-
-- Η κατάσταση του κόσμου ενημερώνεται και το σύστημα καταγράφει όλες τις αλλαγές (θέση, ταχύτητα, ανιχνεύσεις) στο αρχείο `oopproj_2025.log`.
-
-- Το `GridWorld` εκτυπώνει τη νέα κατάσταση του χάρτη στην κονσόλα (POV visualization).
+---
+*This project was developed as an academic showcase of C++ Software Engineering capabilities.*
