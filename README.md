@@ -33,11 +33,11 @@ The vehicle aggregates data from three distinct sensors to build a unified world
 ## Installation & Usage
 
 ### Prerequisites
-* G++ Compiler (supporting C++11 standard)
-* GNU Make
+* **C++ Compiler:** G++ (Linux/macOS) or MinGW (Windows).
+* **Build Tool:** GNU Make
 
 ### Compilation
-Build the project using the provided Makefile:
+Build the project using the provided Makefile. The configuration automatically detects the environment.
 
 **Linux / macOS:**
 ```bash
