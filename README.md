@@ -87,6 +87,13 @@ Run the simulation with custom parameters (dimensions, traffic density, GPS targ
 - **R/G/Y:** Traffic Light
 - **S:** Stop Sign
 
+### Future Work
+
+Planned improvements for upcoming releases:
+- **Graphical User Interface (GUI):** Development of a full graphical environment to replace the console-based visualization.
+
+- **Advanced Navigation Logic:** Refactoring the NavigationSystem to handle complex traffic sign scenarios and priority rules more effectively.
+
 ### Author
 **Anastasios - Christos Kyrios** *Software Engineer / Computer Science Student*
 
