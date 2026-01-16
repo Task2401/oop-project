@@ -38,17 +38,32 @@ The vehicle aggregates data from three distinct sensors to build a unified world
 
 ### Compilation
 Build the project using the provided Makefile:
+
+**Linux / macOS:**
 ```bash
 make
 ```
+**Windows (PowerShell / CMD):**
+```dos
+make
+# Or if using MinGW specifically:
+mingw32-make
+```
+
 
 ### Execution
 
 Run the simulation with custom parameters (dimensions, traffic density, GPS targets):
 
+**Linux / macOS:**
 ```bash
 ./avs --dimX 20 --dimY 20 --gps 5 5 15 15 --simulationTicks 200
 ```
+**Windows (PowerShell / CMD):**
+```dos
+.\avs.exe --dimX 20 --dimY 20 --gps 5 5 15 15 --simulationTicks 200
+```
+
 
 *Use `--help` to see all available configuration flags*
 
